@@ -5,11 +5,13 @@ class Localidad {
     private String nombre;
     private int precio;
     private int espaciosDisponibles;
+    private int espaciosIniciales;
 
-    public Localidad(String nombre, int precio, int espaciosDisponibles) {
+    public Localidad(String nombre, int precio, int espaciosIniciales) {
         this.nombre = nombre;
         this.precio = precio;
-        this.espaciosDisponibles = espaciosDisponibles;
+        this.espaciosIniciales = espaciosIniciales;
+        this.espaciosDisponibles = espaciosIniciales;
     }
 
     public String getNombre() {
@@ -24,13 +26,16 @@ class Localidad {
         return espaciosDisponibles;
     }
 
+    public int getEspaciosIniciales() {
+        return espaciosIniciales;
+    }
+
     public void venderBoletos(int cantidad) {
         espaciosDisponibles -= cantidad;
     }
 }
 
 public class Ticket {
-
     private String nombre;
     private String dpi;
     private int cantidad;
@@ -43,7 +48,6 @@ public class Ticket {
         this.cantidad = cantidad;
         this.presupuesto = presupuesto;
 
-        // 2. número aleatorio de 1 a 28,000
         Random r = new Random();
         this.numero = r.nextInt(28000) + 1;
     }
@@ -54,7 +58,6 @@ public class Ticket {
         int b = r.nextInt(15000) + 1;
         int suma = this.numero + a + b;
 
-        // 3. Validar que la suma sea impar
         return suma % 2 != 0;
     }
 
@@ -65,9 +68,8 @@ public class Ticket {
         System.out.println("Presupuesto: " + this.presupuesto);
         System.out.println("Número: " + this.numero);
 
-        // 1. Solicitar compra de boleto / mostrar si es apto
         if (this.esApto()) {
-            System.out.println("Este ticket es apto para comprar boletos. ");
+            System.out.println("Este ticket es apto para comprar boletos.");
         } else {
             System.out.println("Este ticket no es apto para comprar boletos.");
         }
@@ -75,60 +77,84 @@ public class Ticket {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Ingrese su nombre:");
-        String nombre = sc.nextLine();
-        System.out.println("Ingrese su DPI:");
-        String dpi = sc.nextLine();
-        System.out.println("Ingrese la cantidad de boletos a comprar:");
-        int cantidad = sc.nextInt();
-        System.out.println("Ingrese su presupuesto máximo:");
-        double presupuesto = sc.nextDouble();
+        Ticket t = null;
+        Localidad[] localidades = {
+            new Localidad("Localidad 1", 300, 20),
+            new Localidad("Localidad 5", 565, 20),
+            new Localidad("Localidad 10", 1495, 20)
+        };
 
-        Ticket t = new Ticket(nombre, dpi, cantidad, presupuesto);
-        t.mostrar();
+        while (true) {
+            System.out.println("Menú:");
+            System.out.println("1. Nuevo comprador");
+            System.out.println("2. Nueva solicitud de boletos");
+            System.out.println("3. Consultar disponibilidad total");
+            System.out.println("4. Consultar disponibilidad individual");
+            System.out.println("5. Reporte de caja");
+            System.out.println("6. Salir");
+            System.out.print("Ingrese la opción deseada: ");
+            int opcion = sc.nextInt();
+            sc.nextLine(); 
 
-        // 5. Vender boletos y seleccionar localidad aleatoria
-        if (t.esApto()) {
-            Localidad localidad = seleccionarLocalidadAleatoria();
-            if (localidad != null) {
-                venderBoletos(t, localidad);
+            switch (opcion) {
+                case 1:
+                    System.out.println("Ingrese su nombre:");
+                    String nombre = sc.nextLine();
+                    System.out.println("Ingrese su DPI:");
+                    String dpi = sc.nextLine();
+                    System.out.println("Ingrese la cantidad de boletos a comprar:");
+                    int cantidad = sc.nextInt();
+                    System.out.println("Ingrese su presupuesto máximo:");
+                    double presupuesto = sc.nextDouble();
+                    t = new Ticket(nombre, dpi, cantidad, presupuesto);
+                    break;
+
+                case 2:
+                    if (t != null) {
+                        t.mostrar();
+                        if (t.esApto()) {
+                            Localidad localidad = seleccionarLocalidadAleatoria(localidades);
+                            if (localidad != null) {
+                                venderBoletos(t, localidad);
+                            }
+                        }
+                    } else {
+                        System.out.println("No se ha registrado un nuevo comprador.");
+                    }
+                    break;
+
+                case 3:
+                    consultarDisponibilidadTotal(localidades);
+                    break;
+
+                case 4:
+                    if (t != null) {
+                        System.out.println("Seleccione una localidad:");
+                        for (int i = 0; i < localidades.length; i++) {
+                            System.out.println((i + 1) + ". " + localidades[i].getNombre());
+                        }
+                        int seleccion = sc.nextInt();
+                        if (seleccion >= 1 && seleccion <= localidades.length) {
+                            consultarDisponibilidadIndividual(localidades[seleccion - 1]);
+                        } else {
+                            System.out.println("Opción inválida.");
+                        }
+                    } else {
+                        System.out.println("No se ha registrado un nuevo comprador.");
+                    }
+                    break;
+
+                case 5:
+                    reporteDeCaja(localidades);
+                    break;
+
+                case 6:
+                    System.out.println("¡Hasta luego!");
+                    return;
+
+                default:
+                    System.out.println("Opción inválida. Por favor, elija una opción del menú.");
+                    break;
             }
         }
     }
-
-    // 4. seleccionar una localidad aleatoria
-    private static Localidad seleccionarLocalidadAleatoria() {
-        Localidad[] localidades = {
-                new Localidad("Localidad 1", 300, 20),
-                new Localidad("Localidad 5", 565, 20),
-                new Localidad("Localidad 10", 1495, 20)
-        };
-        Random r = new Random();
-        int index = r.nextInt(localidades.length);
-        return localidades[index];
-    }
-
-    // 6. vender boletos y realizar validaciones
-    private static void venderBoletos(Ticket ticket, Localidad localidad) {
-        if (localidad.getEspaciosDisponibles() == 0) {
-            System.out.println("Lo sentimos, la localidad está llena.");
-            return;
-        }
-
-        int boletosDisponibles = Math.min(ticket.cantidad, localidad.getEspaciosDisponibles());
-        if (boletosDisponibles == 0) {
-            System.out.println("No hay boletos disponibles para la cantidad deseada.");
-            return;
-        }
-
-        double costoTotal = boletosDisponibles * localidad.getPrecio();
-        if (costoTotal > ticket.presupuesto) {
-            System.out.println("El costo total excede el presupuesto máximo.");
-            return;
-        }
-
-        // 7. si pasa validación
-        localidad.venderBoletos(boletosDisponibles);
-        System.out.println("Boletos vendidos: " + boletosDisponibles);
-    }
-}
