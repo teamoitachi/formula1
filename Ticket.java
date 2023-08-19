@@ -1,7 +1,6 @@
 import java.util.Random;
 import java.util.Scanner;
 
-
 class Localidad {
     private String nombre;
     private int precio;
@@ -80,9 +79,9 @@ public class Ticket {
         Scanner sc = new Scanner(System.in);
         Ticket t = null;
         Localidad[] localidades = {
-            new Localidad("Localidad 1", 300, 20),
-            new Localidad("Localidad 5", 565, 20),
-            new Localidad("Localidad 10", 1495, 20)
+                new Localidad("Localidad 1", 300, 20),
+                new Localidad("Localidad 5", 565, 20),
+                new Localidad("Localidad 10", 1495, 20)
         };
 
         while (true) {
@@ -95,7 +94,7 @@ public class Ticket {
             System.out.println("6. Salir");
             System.out.print("Ingrese la opción deseada: ");
             int opcion = sc.nextInt();
-            sc.nextLine(); 
+            sc.nextLine();
 
             switch (opcion) {
                 case 1:
@@ -171,3 +170,19 @@ public class Ticket {
             System.out.println("Lo sentimos, la localidad está llena.");
             return;
         }
+
+        int boletosDisponibles = Math.min(ticket.cantidad, localidad.getEspaciosDisponibles());
+        if (boletosDisponibles == 0) {
+            System.out.println("No hay boletos disponibles para la cantidad deseada.");
+            return;
+        }
+
+        double costoTotal = boletosDisponibles * localidad.getPrecio();
+        if (costoTotal > ticket.presupuesto) {
+            System.out.println("El costo total excede el presupuesto máximo.");
+            return;
+        }
+
+        localidad.venderBoletos(boletosDisponibles);
+        System.out.println("Boletos vendidos: " + boletosDisponibles);
+    }
