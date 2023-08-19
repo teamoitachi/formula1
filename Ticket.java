@@ -1,5 +1,7 @@
+
 import java.util.Random;
 import java.util.Scanner;
+
 
 class Localidad {
     private String nombre;
@@ -79,9 +81,9 @@ public class Ticket {
         Scanner sc = new Scanner(System.in);
         Ticket t = null;
         Localidad[] localidades = {
-                new Localidad("Localidad 1", 300, 20),
-                new Localidad("Localidad 5", 565, 20),
-                new Localidad("Localidad 10", 1495, 20)
+            new Localidad("Localidad 1", 300, 20),
+            new Localidad("Localidad 5", 565, 20),
+            new Localidad("Localidad 10", 1495, 20)
         };
 
         while (true) {
@@ -94,7 +96,7 @@ public class Ticket {
             System.out.println("6. Salir");
             System.out.print("Ingrese la opción deseada: ");
             int opcion = sc.nextInt();
-            sc.nextLine();
+            sc.nextLine(); 
 
             switch (opcion) {
                 case 1:
@@ -186,3 +188,27 @@ public class Ticket {
         localidad.venderBoletos(boletosDisponibles);
         System.out.println("Boletos vendidos: " + boletosDisponibles);
     }
+
+    private static void consultarDisponibilidadTotal(Localidad[] localidades) {
+        for (Localidad loc : localidades) {
+            System.out.println("Localidad: " + loc.getNombre());
+            System.out.println("Boletos vendidos: " + (loc.getEspaciosIniciales() - loc.getEspaciosDisponibles()));
+            System.out.println("Boletos disponibles: " + loc.getEspaciosDisponibles());
+        }
+    }
+
+    private static void consultarDisponibilidadIndividual(Localidad localidad) {
+        System.out.println("Localidad: " + localidad.getNombre());
+        System.out.println("Boletos disponibles: " + localidad.getEspaciosDisponibles());
+    }
+
+    private static void reporteDeCaja(Localidad[] localidades) {
+        double totalCaja = 0;
+        for (Localidad loc : localidades) {
+            int boletosVendidos = loc.getEspaciosIniciales() - loc.getEspaciosDisponibles();
+            totalCaja += boletosVendidos * loc.getPrecio();
+        }
+        System.out.println("Total de dinero generado: " + totalCaja);
+    }
+}
+
