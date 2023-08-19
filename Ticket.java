@@ -1,13 +1,30 @@
 
+/**
+ * Formula 1
+ * Luisa Jiménez - 23011, Dhastry Secaira - 231086
+ * El presente código cumple con la finalidad de interactúa con el usuario a través de un menú, 
+ * permitiendo registrar datos de compradores, solicitar boletos, verificar disponibilidad y generar 
+ * reportes
+ * 19 / 08 / 2023
+
+ */
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * Clase que representa una localidad donde se pueden comprar boletos.
+ */
 
 class Localidad {
     private String nombre;
     private int precio;
     private int espaciosDisponibles;
     private int espaciosIniciales;
+
+    /**
+     * Constructor para crear una localidad con su nombre, precio y espacios
+     * iniciales.
+     */
 
     public Localidad(String nombre, int precio, int espaciosIniciales) {
         this.nombre = nombre;
@@ -37,6 +54,10 @@ class Localidad {
     }
 }
 
+/**
+ * Clase que representa un ticket de compra para un concierto.
+ */
+
 public class Ticket {
     private String nombre;
     private String dpi;
@@ -44,15 +65,25 @@ public class Ticket {
     private double presupuesto;
     private int numero;
 
+    /**
+     * Constructor para crear un ticket con nombre, DPI, cantidad de boletos y
+     * presupuesto máximo.
+     */
+
     public Ticket(String nombre, String dpi, int cantidad, double presupuesto) {
         this.nombre = nombre;
         this.dpi = dpi;
         this.cantidad = cantidad;
         this.presupuesto = presupuesto;
 
+        // Generar un número aleatorio para el ticket
         Random r = new Random();
         this.numero = r.nextInt(28000) + 1;
     }
+
+    /**
+     * Método para verificar si el ticket es apto para comprar boletos.
+     */
 
     public boolean esApto() {
         Random r = new Random();
@@ -77,13 +108,16 @@ public class Ticket {
         }
     }
 
+    /**
+     * Método principal que inicia el programa y maneja el menú de opciones.
+     */
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Ticket t = null;
         Localidad[] localidades = {
-            new Localidad("Localidad 1", 300, 20),
-            new Localidad("Localidad 5", 565, 20),
-            new Localidad("Localidad 10", 1495, 20)
+                new Localidad("Localidad 1", 300, 20),
+                new Localidad("Localidad 5", 565, 20),
+                new Localidad("Localidad 10", 1495, 20)
         };
 
         while (true) {
@@ -96,10 +130,10 @@ public class Ticket {
             System.out.println("6. Salir");
             System.out.print("Ingrese la opción deseada: ");
             int opcion = sc.nextInt();
-            sc.nextLine(); 
+            sc.nextLine();
 
             switch (opcion) {
-                case 1:
+                case 1: // Registrar un nuevo comprador
                     System.out.println("Ingrese su nombre:");
                     String nombre = sc.nextLine();
                     System.out.println("Ingrese su DPI:");
@@ -111,7 +145,7 @@ public class Ticket {
                     t = new Ticket(nombre, dpi, cantidad, presupuesto);
                     break;
 
-                case 2:
+                case 2: // Realizar una solicitud de boletos
                     if (t != null) {
                         t.mostrar();
                         if (t.esApto()) {
@@ -125,11 +159,11 @@ public class Ticket {
                     }
                     break;
 
-                case 3:
+                case 3: // Realizar una solicitud de boletos
                     consultarDisponibilidadTotal(localidades);
                     break;
 
-                case 4:
+                case 4: // Consultar disponibilidad individual
                     if (t != null) {
                         System.out.println("Seleccione una localidad:");
                         for (int i = 0; i < localidades.length; i++) {
@@ -146,11 +180,11 @@ public class Ticket {
                     }
                     break;
 
-                case 5:
+                case 5: // Generar el reporte de caja
                     reporteDeCaja(localidades);
                     break;
 
-                case 6:
+                case 6: // Salir
                     System.out.println("¡Hasta luego!");
                     return;
 
@@ -211,4 +245,3 @@ public class Ticket {
         System.out.println("Total de dinero generado: " + totalCaja);
     }
 }
-
