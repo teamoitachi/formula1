@@ -1,6 +1,7 @@
 import java.util.Random;
 import java.util.Scanner;
 
+
 class Localidad {
     private String nombre;
     private int precio;
@@ -158,3 +159,15 @@ public class Ticket {
             }
         }
     }
+
+    private static Localidad seleccionarLocalidadAleatoria(Localidad[] localidades) {
+        Random r = new Random();
+        int index = r.nextInt(localidades.length);
+        return localidades[index];
+    }
+
+    private static void venderBoletos(Ticket ticket, Localidad localidad) {
+        if (localidad.getEspaciosDisponibles() == 0) {
+            System.out.println("Lo sentimos, la localidad está llena.");
+            return;
+        }
